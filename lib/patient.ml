@@ -1,20 +1,26 @@
 type t = string list
 
-exception Empty of string
+exception Error
 
 let empty = []
-let create name diagnosis = [ name; diagnosis ]
+
+let create name diagnosis =
+  match name with
+  | "" -> raise Error
+  | _ -> (
+      match diagnosis with
+      | "Appendicitis" | "Sprain" | "Flu" -> [ name; diagnosis ]
+      | _ -> raise Error)
 
 let name patient =
   match patient with
-  | [] -> raise (Empty "Patient has empty name.")
   | n :: _ -> n
+  | [] -> raise Error
 
 let diagnosis patient =
   match patient with
-  | [] -> raise (Empty "Patient has empty diagnosis.")
   | _ :: d :: _ -> d
-  | _ -> raise (Empty "Invalid patient information.")
+  | _ -> raise Error
 
 let priority patient =
   let diagnosis = diagnosis patient in
@@ -22,4 +28,4 @@ let priority patient =
   | "Appendicitis" -> 0
   | "Sprain" -> 1
   | "Flu" -> 2
-  | _ -> raise (Empty "Invalid patient diagnosis!")
+  | _ -> raise Error

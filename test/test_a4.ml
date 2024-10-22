@@ -86,7 +86,7 @@ let string_of_patient_lst lst =
          ^ "]")
        lst)
 
-(* Test cases *)
+(* Test case functions *)
 
 (* Requirement 3.3 and 3.4 *)
 let test_patient_list_pq file =
@@ -126,6 +126,11 @@ let test_patient_list_pq file =
   in
   assert_equal results new_patients ~printer:string_of_patient_lst
 
+(* Testing Patient unit *)
+
+let test_patient_errors case =
+  "Testing patient error cases" >:: fun _ -> assert_raises A4.Patient.Error case
+
 (* Test suite *)
 let tests =
   "test suite"
@@ -143,6 +148,17 @@ let tests =
          test_string_pq;
          (* Tests for Patient *)
          test_patient_list_pq "../data/waiting_room.csv";
+         test_patient_errors (fun () -> A4.Patient.create "Gojo Satoru" "dead");
+         test_patient_errors (fun () -> A4.Patient.create "Reigen Arataka" "");
+         test_patient_errors (fun () -> A4.Patient.create "" "Appendicitis");
+         test_patient_errors (fun () -> A4.Patient.create "" "oogly boogly");
+         test_patient_errors (fun () -> A4.Patient.create "" "");
+         test_patient_errors (fun () -> A4.Patient.name A4.Patient.empty);
+         test_patient_errors (fun () -> A4.Patient.diagnosis A4.Patient.empty);
+         test_patient_errors (fun () -> A4.Patient.priority A4.Patient.empty);
+         test_patient_errors (fun () ->
+             A4.Patient.priority
+               (A4.Patient.create "Gojo Satoru" "oogly boogly"));
        ]
 
 let _ = run_test_tt_main tests
