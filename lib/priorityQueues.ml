@@ -78,3 +78,50 @@ struct
   let front q = if is_empty q then raise Empty else List.hd q
   let dequeue q = if is_empty q then raise Empty else List.tl q
 end
+
+module MakeTreePQ (T : Prioritizable) : PriorityQueue with type elt = T.t =
+struct
+  type elt = T.t
+
+  (* AF: The tree represents a priority queue where the element with the highest
+     priority is at the front of the tree (the root). The empty tree is
+     represented by [Leaf] which corresponds to an empty priority queue. *)
+  (* RI: The priority queue is structured as a binary tree where each [Node] has
+     an element and two subtrees. The priority of the parent node is <= the
+     priorities of its children, so the element with the highest priority is
+     always at the front. The left and right subtrees must also be valid
+     priority queues. *)
+  type t =
+    | Leaf
+    | Node of elt * t * t
+
+  exception Empty
+
+  let empty = Leaf
+
+  let is_empty = function
+    | Leaf -> true
+    | _ -> false
+
+  let rec merge h1 h2 =
+    match (h1, h2) with
+    | Leaf, h | h, Leaf -> h
+    | Node (x, a1, b1), Node (y, a2, b2) ->
+        if compare (T.priority x) (T.priority y) <= 0 then
+          Node (x, a1, merge b1 h2)
+        else Node (y, a2, merge h1 b2)
+
+  let rec enqueue x h = merge h (Node (x, Leaf, Leaf))
+
+  let front = function
+    | Leaf -> raise Empty
+    | Node (x, _, _) -> x
+
+  let dequeue = function
+    | Leaf -> raise Empty
+    | Node (_, l, r) -> merge l r
+
+  let rec to_list = function
+    | Leaf -> []
+    | Node (x, l, r) -> x :: to_list (merge l r)
+end
