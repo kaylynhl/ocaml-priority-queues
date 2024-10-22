@@ -1,6 +1,6 @@
 open OUnit2
 open A4.PriorityQueues
-include A4.Patient
+open A4
 
 (* Given module *)
 module LengthPrioritizedString = struct
@@ -98,9 +98,7 @@ module PatientPQTester (Q : PriorityQueue with type elt = A4.Patient.t) = struct
     String.concat "\n"
       (List.map
          (fun patient ->
-           "[" ^ A4.Patient.name patient ^ "; "
-           ^ A4.Patient.diagnosis patient
-           ^ "]")
+           "[" ^ Patient.name patient ^ "; " ^ Patient.diagnosis patient ^ "]")
          lst)
 
   (* Requirement 3.3 and 3.4 *)
@@ -112,8 +110,8 @@ module PatientPQTester (Q : PriorityQueue with type elt = A4.Patient.t) = struct
       List.map
         (fun patient ->
           match patient with
-          | [ name; diagnosis ] -> A4.Patient.create name diagnosis
-          | _ -> A4.Patient.empty)
+          | [ name; diagnosis ] -> Patient.create name diagnosis
+          | _ -> Patient.empty)
         patients
     in
     (* Load patients into initially empty PatientListPQ *)
@@ -132,52 +130,49 @@ module PatientPQTester (Q : PriorityQueue with type elt = A4.Patient.t) = struct
        Triage. *)
     let results =
       [
-        A4.Patient.create "Jennifer Lawrence" "Appendicitis";
-        A4.Patient.create "Tom Holland" "Appendicitis";
-        A4.Patient.create "Timothee Chalamet" "Sprain";
-        A4.Patient.create "Margot Robbie" "Sprain";
-        A4.Patient.create "Austin Butler" "Flu";
-        A4.Patient.create "Zendaya" "Flu";
+        Patient.create "Jennifer Lawrence" "Appendicitis";
+        Patient.create "Tom Holland" "Appendicitis";
+        Patient.create "Timothee Chalamet" "Sprain";
+        Patient.create "Margot Robbie" "Sprain";
+        Patient.create "Austin Butler" "Flu";
+        Patient.create "Zendaya" "Flu";
       ]
     in
     assert_equal results new_patients ~printer:string_of_patient_lst
 
   let test_patient_errors case =
-    "Testing patient error cases" >:: fun _ ->
-    assert_raises A4.Patient.Error case
+    "Testing patient error cases" >:: fun _ -> assert_raises Patient.Error case
 
   (* Test suite *)
   let tests =
     "test suite"
     >::: [
            test_patient_list_pq "../data/waiting_room.csv";
+           test_patient_errors (fun () -> Patient.create "Gojo Satoru" "dead");
+           test_patient_errors (fun () -> Patient.create "Reigen Arataka" "");
+           test_patient_errors (fun () -> Patient.create "" "Appendicitis");
+           test_patient_errors (fun () -> Patient.create "" "oogly boogly");
+           test_patient_errors (fun () -> Patient.create "" "");
+           test_patient_errors (fun () -> Patient.name Patient.empty);
+           test_patient_errors (fun () -> Patient.diagnosis Patient.empty);
+           test_patient_errors (fun () -> Patient.priority Patient.empty);
            test_patient_errors (fun () ->
-               A4.Patient.create "Gojo Satoru" "dead");
-           test_patient_errors (fun () -> A4.Patient.create "Reigen Arataka" "");
-           test_patient_errors (fun () -> A4.Patient.create "" "Appendicitis");
-           test_patient_errors (fun () -> A4.Patient.create "" "oogly boogly");
-           test_patient_errors (fun () -> A4.Patient.create "" "");
-           test_patient_errors (fun () -> A4.Patient.name A4.Patient.empty);
-           test_patient_errors (fun () -> A4.Patient.diagnosis A4.Patient.empty);
-           test_patient_errors (fun () -> A4.Patient.priority A4.Patient.empty);
-           test_patient_errors (fun () ->
-               A4.Patient.priority
-                 (A4.Patient.create "Gojo Satoru" "oogly boogly"));
+               Patient.priority (Patient.create "Gojo Satoru" "oogly boogly"));
          ]
 end
 
 module StringListPQTest = StringPQTester (MakeListPQ (LengthPrioritizedString))
-module PatientListPQTest = PatientPQTester (MakeListPQ (A4.Patient))
-module StringListTreeTest = StringPQTester (MakeTreePQ (LengthPrioritizedString))
-module PatientListTreeTest = PatientPQTester (MakeTreePQ (A4.Patient))
+module PatientListPQTest = PatientPQTester (MakeListPQ (Patient))
+module StringTreeTest = StringPQTester (MakeTreePQ (LengthPrioritizedString))
+module PatientTreeTest = PatientPQTester (MakeTreePQ (Patient))
 
 let tests =
   "test suite"
   >::: [
          StringListPQTest.tests;
          PatientListPQTest.tests;
-         StringListTreeTest.tests;
-         PatientListTreeTest.tests;
+         StringTreeTest.tests;
+         PatientTreeTest.tests;
        ]
 
 let _ = run_test_tt_main tests

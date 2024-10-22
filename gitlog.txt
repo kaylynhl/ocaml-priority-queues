@@ -1,3 +1,13 @@
+commit 20e87948da747c0186c8e238da73a8e382dcb2a2
+Author: Kaylyn Lee <khl62@cornell.edu>
+Date:   Tue Oct 22 04:06:34 2024 -0400
+
+    Implement test functors StringPQTester and PatientPQTester
+    
+    - Updated gitlog.txt
+    - Added MakeTreePQ
+    - Revised unit tests for functor
+
 commit 8a06d1adb3e0b298a1eeab756a03e251a03b53ef
 Author: Kaylyn Lee <khl62@cornell.edu>
 Date:   Tue Oct 22 03:22:44 2024 -0400
