@@ -70,7 +70,7 @@ struct
     match q with
     | [] -> [ x ]
     | h :: t ->
-        if T.priority h = T.priority x then h :: x :: t
+        if T.priority h = T.priority x then h :: enqueue x t
         else if T.priority h > T.priority x then x :: h :: t
         else h :: enqueue x t
 
