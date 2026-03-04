@@ -4,6 +4,7 @@ _coverage/
 .DS_Store
 *.swp
 *.swo
+*~
 *.orig
 *.rej
 .merlin

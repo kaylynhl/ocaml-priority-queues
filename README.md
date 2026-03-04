@@ -39,6 +39,12 @@ Or, using helper targets:
 make build
 ```
 
+Run a full local verification pass:
+
+```bash
+make check
+```
+
 Run interactively:
 
 ```bash
@@ -62,6 +68,8 @@ Or:
 ```bash
 make test
 ```
+
+Both queue implementations and patient invariants are covered by 44 OUnit tests.
 
 ## Format
 

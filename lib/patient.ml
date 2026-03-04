@@ -12,9 +12,6 @@ exception Error
 
 let empty = { name = None; diagnosis = None }
 let normalize_name name = String.trim name
-let appendicitis_priority = 0
-let sprain_priority = 1
-let flu_priority = 2
 
 let diagnosis_of_string = function
   | "Appendicitis" -> Appendicitis
@@ -46,8 +43,8 @@ let diagnosis patient =
 
 let priority patient =
   match get_option_field patient.diagnosis with
-  | Appendicitis -> appendicitis_priority
-  | Sprain -> sprain_priority
-  | Flu -> flu_priority
+  | Appendicitis -> 0
+  | Sprain -> 1
+  | Flu -> 2
 (* NOTE: We intentionally keep [empty] + field accessors that can raise [Error]
    because tests and CLI behavior depend on this legacy API contract. *)

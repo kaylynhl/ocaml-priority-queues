@@ -1,3 +1,5 @@
+.PHONY: build test fmt check
+
 build:
 	dune build
 

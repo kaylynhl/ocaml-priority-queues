@@ -28,8 +28,8 @@ let admit diagnosis patient_name q =
     q
 
 let parse_admit_input input =
-  match String.split_on_char ' ' (String.trim input) with
-  | [] | [ "" ] -> None
+  match Str.split (Str.regexp "[ \t]+") (String.trim input) with
+  | [] -> None
   | diagnosis :: name_tokens -> Some (diagnosis, String.concat " " name_tokens)
 
 let rec prompt_user q =

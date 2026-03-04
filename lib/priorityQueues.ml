@@ -66,15 +66,15 @@ struct
   let empty = []
   let is_empty q = q = empty
 
-  let rec enqueue x q =
+  let enqueue x q =
     let priority_x = T.priority x in
-    match q with
-    | [] -> [ x ]
-    | h :: t ->
-        let priority_h = T.priority h in
-        if priority_h = priority_x then h :: enqueue x t
-        else if priority_h > priority_x then x :: h :: t
-        else h :: enqueue x t
+    let rec insert_prefix acc = function
+      | [] -> List.rev (x :: acc)
+      | h :: t as rest ->
+          if T.priority h > priority_x then List.rev_append acc (x :: rest)
+          else insert_prefix (h :: acc) t
+    in
+    insert_prefix [] q
 
   let to_list q = q
 
@@ -130,6 +130,12 @@ struct
     | Leaf -> raise Empty
     | Node (_, l, r) -> merge l r
 
-  let rec to_list queue =
-    if is_empty queue then [] else front queue :: to_list (dequeue queue)
+  let to_list queue =
+    let rec extract acc = function
+      | Leaf -> List.rev acc
+      | q ->
+          let x = front q in
+          extract (x :: acc) (dequeue q)
+    in
+    extract [] queue
 end

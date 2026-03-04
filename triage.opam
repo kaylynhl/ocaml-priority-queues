@@ -5,7 +5,7 @@ description:
   "A small OCaml project that models a hospital waiting room using reusable priority queue functors and an interactive CLI."
 maintainer: ["Kaylyn Lee"]
 authors: ["Kaylyn Lee"]
-license: "MIT"
+license: "All rights reserved"
 tags: ["priority-queue" "triage" "ocaml" "functors" "cli"]
 homepage: "https://github.com/kaylynhl/ocaml-priority-queues"
 bug-reports: "https://github.com/kaylynhl/ocaml-priority-queues/issues"
