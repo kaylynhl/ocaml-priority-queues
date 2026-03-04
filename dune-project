@@ -10,7 +10,7 @@
 
 (maintainers "Kaylyn Lee")
 
-(license "MIT")
+(license "All rights reserved")
 
 (package
  (name triage)
