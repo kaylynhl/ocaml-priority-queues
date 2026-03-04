@@ -67,16 +67,24 @@ struct
   let is_empty q = q = empty
 
   let rec enqueue x q =
+    let priority_x = T.priority x in
     match q with
     | [] -> [ x ]
     | h :: t ->
-        if T.priority h = T.priority x then h :: enqueue x t
-        else if T.priority h > T.priority x then x :: h :: t
+        let priority_h = T.priority h in
+        if priority_h = priority_x then h :: enqueue x t
+        else if priority_h > priority_x then x :: h :: t
         else h :: enqueue x t
 
   let to_list q = q
-  let front q = if is_empty q then raise Empty else List.hd q
-  let dequeue q = if is_empty q then raise Empty else List.tl q
+
+  let front = function
+    | [] -> raise Empty
+    | h :: _ -> h
+
+  let dequeue = function
+    | [] -> raise Empty
+    | _ :: t -> t
 end
 
 module MakeTreePQ (T : Prioritizable) : PriorityQueue with type elt = T.t =
@@ -107,11 +115,12 @@ struct
     match (h1, h2) with
     | Leaf, h | h, Leaf -> h
     | Node (x, a1, b1), Node (y, a2, b2) ->
-        if compare (T.priority x) (T.priority y) <= 0 then
-          Node (x, a1, merge b1 h2)
+        let priority_x = T.priority x in
+        let priority_y = T.priority y in
+        if priority_x <= priority_y then Node (x, a1, merge b1 h2)
         else Node (y, a2, merge h1 b2)
 
-  let rec enqueue x h = merge h (Node (x, Leaf, Leaf))
+  let enqueue x h = merge h (Node (x, Leaf, Leaf))
 
   let front = function
     | Leaf -> raise Empty
@@ -121,7 +130,6 @@ struct
     | Leaf -> raise Empty
     | Node (_, l, r) -> merge l r
 
-  let rec to_list = function
-    | Leaf -> []
-    | Node (x, l, r) -> x :: to_list (merge l r)
+  let rec to_list queue =
+    if is_empty queue then [] else front queue :: to_list (dequeue queue)
 end

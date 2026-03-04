@@ -1,26 +1,26 @@
 (lang dune 3.16)
 
-(name a4)
+(name triage)
 
 (generate_opam_files true)
 
-(source
- (github username/reponame))
+(source (github kaylynhl/ocaml-priority-queues))
 
-(authors "Author Name")
+(authors "Kaylyn Lee")
 
-(maintainers "Maintainer Name")
+(maintainers "Kaylyn Lee")
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license "MIT")
 
 (package
- (name a4)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml dune)
- (tags
-  (topics "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+ (name triage)
+ (synopsis "Priority-queue driven hospital triage simulator in OCaml")
+ (description
+  "A small OCaml project that models a hospital waiting room using reusable \
+   priority queue functors and an interactive CLI.")
+ (depends
+  ocaml
+  dune
+  csv
+  (ounit2 :with-test))
+ (tags (priority-queue triage ocaml functors cli)))

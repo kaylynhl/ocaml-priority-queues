@@ -9,9 +9,13 @@ val empty : t
 
 val create : string -> string -> t
 (** [create name diagnosis] is the patient with the name [name] and malady
-    [diagnosis]. Requires: [name] is a non-empty string and [diagnosis] is one
-    of the following strings: "Appendicitis", "Sprain", or "Flu".
-    Case-sensitive. Raises [Error] exception if not. *)
+    [diagnosis].
+
+    Requires:
+    - [name] is non-empty after trimming leading and trailing whitespace.
+    - [diagnosis] is exactly one of: ["Appendicitis"], ["Sprain"], or ["Flu"].
+
+    Raises [Error] if these preconditions are violated. *)
 
 val name : t -> string
 (** [name patient] is the name of the patient. Raises [Error] exception if

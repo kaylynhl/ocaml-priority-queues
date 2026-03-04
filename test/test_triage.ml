@@ -1,6 +1,6 @@
 open OUnit2
-open A4.PriorityQueues
-open A4
+open Triage.PriorityQueues
+open Triage
 
 (* Given module *)
 module LengthPrioritizedString = struct
@@ -75,6 +75,11 @@ struct
       [ "a"; "is"; "this"; "test"; "hello"; "world" ]
       (Q.to_list q) ~printer:(String.concat "; ")
 
+  let test_front_after_multiple_enqueues =
+    "Front remains minimal-priority element after many enqueues" >:: fun _ ->
+    let q = enqueue_elements [ "cat"; "ok"; "alpha"; "z" ] in
+    assert_equal "z" (Q.front q) ~printer:Fun.id
+
   (* Test Suite *)
   let tests =
     "test suite"
@@ -89,10 +94,12 @@ struct
            test_dequeue_empty;
            test_dequeue;
            test_string_pq;
+           test_front_after_multiple_enqueues;
          ]
 end
 
-module PatientPQTester (Q : PriorityQueue with type elt = A4.Patient.t) = struct
+module PatientPQTester (Q : PriorityQueue with type elt = Triage.Patient.t) =
+struct
   (** [string_of_patient_lst lst] is the string format of a list of patients. *)
   let string_of_patient_lst lst =
     String.concat "\n"
@@ -143,11 +150,17 @@ module PatientPQTester (Q : PriorityQueue with type elt = A4.Patient.t) = struct
   let test_patient_errors case =
     "Testing patient error cases" >:: fun _ -> assert_raises Patient.Error case
 
+  let test_create_trims_name =
+    "Patient.create trims leading/trailing spaces in names" >:: fun _ ->
+    let patient = Patient.create "  Reigen Arataka  " "Sprain" in
+    assert_equal "Reigen Arataka" (Patient.name patient) ~printer:Fun.id
+
   (* Test suite *)
   let tests =
     "test suite"
     >::: [
            test_patient_list_pq "../data/waiting_room.csv";
+           test_create_trims_name;
            test_patient_errors (fun () -> Patient.create "Gojo Satoru" "dead");
            test_patient_errors (fun () -> Patient.create "Reigen Arataka" "");
            test_patient_errors (fun () -> Patient.create "" "Appendicitis");

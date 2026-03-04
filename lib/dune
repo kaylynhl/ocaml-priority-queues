@@ -1,5 +1,5 @@
 (library
- (name a4)
+ (name triage)
  (libraries csv)
- (instrumentation 
+ (instrumentation
   (backend bisect_ppx)))
